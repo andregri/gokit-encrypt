@@ -3,14 +3,20 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/andregri/gokit-encrypt/helpers"
 	httptransport "github.com/go-kit/kit/transport/http"
+	kitlog "github.com/go-kit/log"
 )
 
 func main() {
+	//
+	logger := kitlog.NewLogfmtLogger(os.Stderr)
+
 	// Declare service instance
-	svc := helpers.EncryptServiceInstance{}
+	crypto_svc := helpers.EncryptServiceInstance{}
+	svc := helpers.LogginMiddleware{Logger: logger, Next: crypto_svc}
 
 	// Connect json decoder/encoder for request/response to encrypt endpoint
 	encryptHandler := httptransport.NewServer(
